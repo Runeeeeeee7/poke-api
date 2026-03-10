@@ -6,11 +6,20 @@ import { useGetPokemonDetailQuery, useGetPokemonQuery } from "./pokemonApiSlice"
 const options = [6, 12, 20, 30]
 function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
   const [isOpen, setIsOpen] =  useState(false)
+  const [hasBeenHovered, setIsHovered] = useState(false)
   const urlSplit = url.split("/")
-  const id = urlSplit[urlSplit.length-2] //final parts output is empty(-1), -2 contains the actual id
+
+
+  // "https://pokeapi.co/api/v2/pokemon/25/"
+  // final parts output is empty(-1), -2 contains the actual id
+  const id = Number(urlSplit[urlSplit.length-2]) 
+
+   const { data, isFetching, isError } = useGetPokemonDetailQuery(id, {
+    skip: !hasBeenHovered,
+  })
 
   return (
-    <div>
+    <div onMouseEnter={() => setIsHovered(true)}>
       <blockquote key={id} >
         {name.toUpperCase()}
       </blockquote>
@@ -20,7 +29,10 @@ function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
         
       </button>
       {isOpen && (
-        <p>is open</p>
+        <div>
+          <p>is open</p>
+          <p>{data?.weight}</p>      
+        </div>
       )}
     </div>
 
