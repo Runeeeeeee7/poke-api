@@ -1,12 +1,12 @@
 import type { JSX } from "react"
 import { useState } from "react"
 import styles from "./Pokemon.module.css"
-import { useGetPokemonQuery } from "./pokemonApiSlice"
+import { useGetPokemonDetailQuery, useGetPokemonQuery } from "./pokemonApiSlice"
 
 const options = [6, 12, 20, 30]
 
 export const Pokemon = (): JSX.Element | null => {
-  const [numberOfQuotes, setNumberOfQuotes] = useState(10)
+  const [numberOfQuotes, setNumberOfQuotes] = useState(6)
   const { data, isError, isLoading, isSuccess } = useGetPokemonQuery(numberOfQuotes)
 
   if (isError) {
@@ -28,7 +28,7 @@ export const Pokemon = (): JSX.Element | null => {
   if (isSuccess) {
     return (
       <div className={styles.container}>
-         <h3>Seleccione la cantidad de pokemones a mostrar:</h3>
+        <h3>Seleccione la cantidad de pokemones a mostrar:</h3>
         <select
           className={styles.select}
           value={numberOfQuotes}
@@ -42,9 +42,9 @@ export const Pokemon = (): JSX.Element | null => {
             </option>
           ))}
         </select>
-        {data.results.map(({ name, url}) => (
-          <blockquote key={name}>
-            &ldquo;{name}&rdquo;
+        {data.results.slice(0, numberOfQuotes).map(({ name, url }: { name: string; url: string }) => (
+          <blockquote key={name} >
+            {name.toUpperCase()}
             <footer>
               <cite>{url}</cite>
             </footer>
