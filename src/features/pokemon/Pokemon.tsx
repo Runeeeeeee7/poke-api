@@ -5,13 +5,25 @@ import { useGetPokemonDetailQuery, useGetPokemonQuery } from "./pokemonApiSlice"
 
 const options = [6, 12, 20, 30]
 function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
+  const [isOpen, setIsOpen] =  useState(false)
+  const urlSplit = url.split("/")
+  const id = urlSplit[urlSplit.length-2] //final parts output is empty(-1), -2 contains the actual id
+
   return (
-    <blockquote key={name} >
-      {name.toUpperCase()}
-      <footer>
-        <cite>{url}</cite>
-      </footer>
-    </blockquote>
+    <div>
+      <blockquote key={id} >
+        {name.toUpperCase()}
+      </blockquote>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        
+      </button>
+      {isOpen && (
+        <p>is open</p>
+      )}
+    </div>
+
   )
 }
 
