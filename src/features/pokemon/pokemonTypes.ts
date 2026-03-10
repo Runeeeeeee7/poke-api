@@ -1,3 +1,4 @@
+//api search at /pokemon
 export interface PokemonPaginatedResourceResponse {
     count: number,
     next: string,
@@ -10,6 +11,8 @@ export interface NamedAPIResource<T = string> {
   url: string;
 }
 
+
+//actual pokemon detail,  /pokemon/{id}
 export interface Pokemon {
   id: number;
   name: string;
