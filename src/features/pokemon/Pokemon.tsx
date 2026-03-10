@@ -4,15 +4,25 @@ import styles from "./Pokemon.module.css"
 import { useGetPokemonDetailQuery, useGetPokemonQuery } from "./pokemonApiSlice"
 
 const options = [6, 12, 20, 30]
+function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
+  return (
+    <blockquote key={name} >
+      {name.toUpperCase()}
+      <footer>
+        <cite>{url}</cite>
+      </footer>
+    </blockquote>
+  )
+}
 
 export const Pokemon = (): JSX.Element | null => {
   const [numberOfQuotes, setNumberOfQuotes] = useState(6)
-  const { data, isError, isLoading, isSuccess } = useGetPokemonQuery(numberOfQuotes)
+  const { data, isError, isLoading, isSuccess } = useGetPokemonQuery()
 
   if (isError) {
     return (
       <div>
-        <h1>Hubo un error al cargar</h1>
+        <h1>Hubo un error al cargar: ${isError}</h1>
       </div>
     )
   }
@@ -42,13 +52,8 @@ export const Pokemon = (): JSX.Element | null => {
             </option>
           ))}
         </select>
-        {data.results.slice(0, numberOfQuotes).map(({ name, url }: { name: string; url: string }) => (
-          <blockquote key={name} >
-            {name.toUpperCase()}
-            <footer>
-              <cite>{url}</cite>
-            </footer>
-          </blockquote>
+      {data.results.slice(0,numberOfQuotes).map(p => (
+          <PokemonItem key={p.name} name={p.name} url={p.url} />
         ))}
       </div>
     )

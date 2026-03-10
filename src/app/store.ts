@@ -2,7 +2,7 @@ import type { Action, ThunkAction } from "@reduxjs/toolkit"
 import { combineSlices, configureStore } from "@reduxjs/toolkit"
 import { setupListeners } from "@reduxjs/toolkit/query"
 import { quotesApiSlice } from "../features/quotes/quotesApiSlice"
-import { pokemonApiSlice } from "../features/pokemon/pokemonApiSlice"
+import { pokemonApiSlice, pokemonDetailApiSlice } from "../features/pokemon/pokemonApiSlice"
 
 
 // `combineSlices` automatically combines the reducers using
@@ -18,8 +18,9 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
     reducer: rootReducer,
     middleware: getDefaultMiddleware => {
       return getDefaultMiddleware()
-        .concat(quotesApiSlice.middleware)
         .concat(pokemonApiSlice.middleware)
+        .concat(pokemonDetailApiSlice.middleware)
+
     },
     preloadedState,
   })
