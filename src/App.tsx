@@ -2,65 +2,12 @@ import "./App.css"
 import { Counter } from "./features/counter/Counter"
 import { Quotes } from "./features/quotes/Quotes"
 import { Pokemon } from "./features/pokemon/Pokemon"
-import logo from "./logo.svg"
 
 export const App = () => (
   <div className="App">
     <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <Counter />
-      <p>
-        Edit <code>src/App.tsx</code> and save to reload.
-      </p>
-      <Pokemon />
-      <Quotes />
-      <span>
-        <span>Learn </span>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          React
-        </a>
-        <span>, </span>
-        <a
-          className="App-link"
-          href="https://redux.js.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Redux
-        </a>
-        <span>, </span>
-        <a
-          className="App-link"
-          href="https://redux-toolkit.js.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Redux Toolkit
-        </a>
-        <span>, </span>
-        <a
-          className="App-link"
-          href="https://react-redux.js.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          React Redux
-        </a>
-        ,<span> and </span>
-        <a
-          className="App-link"
-          href="https://reselect.js.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Reselect
-        </a>
-      </span>
+      <img src="https://avatars.githubusercontent.com/u/147678449?v=4&size=64" className="App-logo" alt="logo" />
+      <Pokemon />      
     </header>
   </div>
 )
