@@ -82,6 +82,7 @@ p{
   min-height: 0;
   margin-top: 5px;
   margin-left: 20px;
+  margin-right: 32px;
   padding-left: 10px;
   border-left: 2px solid #8b93e2;
 }
@@ -178,6 +179,27 @@ p{
 
   .ExpandedContent{
     padding-top: 8px;
+  }
+
+  .ExpandedDetails{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 12px 16px;
+    border-left: 2px solid #8b93e2;
+    background-color: #f8f9ff;
+    color: #4e568e;
+  }
+
+  .ExpandedStatus{
+    color: #6c74b4;
+    font-weight: 600;
+  }
+
+  .DetailLabel{
+    color: #8b93e2;
+    font-weight: 700;
   }
 
   .DataContainer{

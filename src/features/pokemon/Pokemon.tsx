@@ -4,7 +4,15 @@ import styles from "./Pokemon.module.css"
 import { useGetPokemonDetailQuery, useGetPokemonQuery } from "./pokemonApiSlice"
 import fuzzysort from 'fuzzysort'
 
-const options = [6, 12, 20, 30]
+const options = [3, 6, 12, 20, 30]
+
+function formatPokemonLabel(value: string): string {
+  return value
+    .split("-")
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ")
+}
+
 function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
   const [isOpen, setIsOpen] =  useState(false)
   const [hasBeenHovered, setIsHovered] = useState(false)
@@ -19,6 +27,13 @@ function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
     // not needed, querying everything at once is fast enough
     //skip: !hasBeenHovered,
   })
+
+  const typeNames = data?.types.map(entry => formatPokemonLabel(entry.type.name)).join(", ")
+  const abilityNames = data?.abilities.map(entry => formatPokemonLabel(entry.ability.name)).join(", ")
+  const statSummary = data?.stats
+    .slice(0, 3)
+    .map(stat => `${formatPokemonLabel(stat.stat.name)}: ${stat.base_stat}`)
+    .join(" | ")
 
   return (
     <div onMouseEnter={() => setIsHovered(true)} className={styles.PokemonItemRootContainer}>
@@ -44,7 +59,7 @@ function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
               Weight: {data?.weight}
             </p>
             <p>
-              Is default? {data?.is_default}
+              Type: {data?.types[0].type.name.toLocaleUpperCase()}
             </p>
           </div>
         </div>
@@ -63,8 +78,18 @@ function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
       </button>
       {isOpen && (
         <div className={styles.ExpandedContent}>
-          <p>is open</p>
-          <p>{data?.weight}</p>      
+          {isFetching && <p className={styles.ExpandedStatus}>Loading details...</p>}
+          {isError && <p className={styles.ExpandedStatus}>Unable to load details.</p>}
+          {data && (
+            <div className={styles.ExpandedDetails}>
+              <p><span className={styles.DetailLabel}>Species:</span> {formatPokemonLabel(data.species.name)}</p>
+              <p><span className={styles.DetailLabel}>Abilities:</span> {abilityNames}</p>
+              <p><span className={styles.DetailLabel}>Types:</span> {typeNames}</p>
+              <p><span className={styles.DetailLabel}>Stats:</span> {statSummary}</p>
+              <p><span className={styles.DetailLabel}>Default form:</span> {data.is_default ? "Yes" : "No"}</p>
+              <p><span className={styles.DetailLabel}>Order:</span> {data.order}</p>
+            </div>
+          )}
         </div>
       )}
       </div>
