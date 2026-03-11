@@ -1,8 +1,7 @@
 import type { JSX } from "react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import styles from "./PokemonItem.module.css"
-import { useGetPokemonDetailQuery, useGetPokemonQuery } from "./pokemonApiSlice"
-import fuzzysort from 'fuzzysort'
+import { useGetPokemonDetailQuery } from "./pokemonApiSlice"
 import Spinner from "../spinner/Spinner"
 
 
@@ -15,7 +14,6 @@ function formatPokemonLabel(value: string): string {
 
 function PokemonItem({url}: {url:string}): JSX.Element{
   const [isOpen, setIsOpen] =  useState(false)
-  const [hasBeenHovered, setIsHovered] = useState(false)
   const urlSplit = url.split("/")
 
   // "https://pokeapi.co/api/v2/pokemon/25/"
@@ -23,8 +21,6 @@ function PokemonItem({url}: {url:string}): JSX.Element{
   const id = Number(urlSplit[urlSplit.length-2]) 
 
    const { data, isLoading, isError, isSuccess } = useGetPokemonDetailQuery(id, {
-    // not needed, querying everything at once is fast enough
-    //skip: !hasBeenHovered,
   })
 
   const typeNames = data?.types.map(entry => formatPokemonLabel(entry.type.name)).join(", ")
@@ -53,7 +49,7 @@ function PokemonItem({url}: {url:string}): JSX.Element{
 
   if(isSuccess){
   return (  
-    <div onMouseEnter={() => setIsHovered(true)} className={styles.PokemonItemRootContainer}>
+    <div className={styles.PokemonItemRootContainer}>
       <div className={styles.ItemContainer}>
         <div className={styles.IdContainer}>
           {id}
@@ -90,7 +86,6 @@ function PokemonItem({url}: {url:string}): JSX.Element{
         aria-label={isOpen ? "Hide Pokemon info" : "Show Pokemon info"}
         onClick={() => {
           setIsOpen(!isOpen)
-          setIsHovered(true)
         }}
       >
       {isOpen ? "▼" : "▶"}

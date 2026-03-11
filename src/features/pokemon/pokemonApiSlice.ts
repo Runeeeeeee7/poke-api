@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { NamedAPIResource, Pokemon, PokemonPaginatedResourceResponse } from "./pokemonTypes"
+import {  Pokemon, PokemonPaginatedResourceResponse } from "./pokemonTypes"
 
 export const pokemonApiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "https://pokeapi.co/api/v2/pokemon/" }),

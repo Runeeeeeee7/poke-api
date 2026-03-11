@@ -1,18 +1,14 @@
 import type { JSX } from "react"
 import { useEffect, useState } from "react"
 import styles from "./Pokemon.module.css"
-import { useGetPokemonDetailQuery, useGetPokemonQuery } from "./pokemonApiSlice"
+import { useGetPokemonQuery } from "./pokemonApiSlice"
 import fuzzysort from 'fuzzysort'
 import PokemonItem from "./PokemonItem"
 import Spinner from "../spinner/Spinner"
 
-const options = [3, 6, 12, 20, 30]
-
-
-
 
 export const Pokemon = (): JSX.Element | null => {
-  const [numberOfResults, setnumberOfResults] = useState(6)
+  const [numberOfResults] = useState(6)
   const {data, isError, isLoading, isSuccess } = useGetPokemonQuery()
   const [searchTerm, setSearchTerm] = useState("")
 
@@ -94,32 +90,9 @@ export const Pokemon = (): JSX.Element | null => {
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             className={styles.Input}
-          />
+          />       
+
           
-
-          {/* technically the design document specifies 6 and no more, so rather than risk it we just comment the selector and leave the default at 6*/}
-          <label className={styles.SidebarLabel}>
-            Cantidad de entradas a mostrar
-          </label>
-          <select
-            className={styles.Select}
-            value={numberOfResults}
-            onChange={e => {
-              const newNumberOfResults = Number(e.target.value)
-              setnumberOfResults(newNumberOfResults)
-              const currentPageCalc = Math.ceil(filteredData.length / newNumberOfResults)
-
-              if(currentPage > currentPageCalc){
-                setCurrentPage(currentPageCalc)
-              }           
-            }}
-          >
-            {options.map(option => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
         </div>
           <div className={styles.Content}>
             {filteredData.slice(sliceStart,sliceEnd).map(p => (
