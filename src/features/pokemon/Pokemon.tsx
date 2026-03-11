@@ -5,6 +5,7 @@ import { useGetPokemonDetailQuery, useGetPokemonQuery } from "./pokemonApiSlice"
 import { PokemonPaginatedResourceResponse } from "./pokemonTypes"
 import fuzzysort from 'fuzzysort'
 import { current } from "@reduxjs/toolkit"
+import { isFetchableDevEnvironment } from "vite"
 const options = [6, 12, 20, 30]
 function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
   const [isOpen, setIsOpen] =  useState(false)
@@ -53,7 +54,7 @@ export const Pokemon = (): JSX.Element | null => {
   useEffect(() =>{
     setSliceStart(numberOfResults*(currentPage-1))
     setSliceEnd(numberOfResults*currentPage)
-  }, [numberOfResults, currentPage])
+  }, [numberOfResults, currentPage, searchTerm])
 
   if(data == undefined) return(
     <div>
@@ -62,9 +63,9 @@ export const Pokemon = (): JSX.Element | null => {
   );
 
   const sortedData = searchTerm.length > 1 ? fuzzysort.go(searchTerm, data.results, {key: 'name'}).map(result => result.obj) : data.results
-  
+
   const calculatePagination = () =>{
-    const totalPages = Math.ceil((data?.results?.length || 0) / numberOfResults)
+    const totalPages = Math.ceil((sortedData?.length || 0) / numberOfResults)
     const pages = new Set<number>()
 
     pages.add(1)
@@ -121,7 +122,7 @@ export const Pokemon = (): JSX.Element | null => {
           onChange={e => {
             const newNumberOfResults = Number(e.target.value)
             setnumberOfResults(newNumberOfResults)
-            const currentPageCalc = Math.ceil(data.results.length / newNumberOfResults)
+            const currentPageCalc = Math.ceil(sortedData.length / newNumberOfResults)
 
             if(currentPage > currentPageCalc){
               setCurrentPage(currentPageCalc)
