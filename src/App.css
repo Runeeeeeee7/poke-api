@@ -32,6 +32,22 @@
   align-items: center; 
   padding: 16px;
 }
+@keyframes Gradient {
+  0% {
+    color: inherit;
+  }
+  100% {
+    color: #8b93e2;
+  }
+}
+
+.Header-info {
+  transition: color 0.3s ease-in-out;
+}
+
+.Header-info:hover {
+  color: #8b93e2;
+}
 
 .App-link {
   color: rgb(112, 76, 182);

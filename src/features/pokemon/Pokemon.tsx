@@ -169,7 +169,7 @@ export const Pokemon = (): JSX.Element | null => {
 
           <input
             type="text"
-            placeholder="Busca Pokémon..."
+            placeholder="Busca a un Pokémon..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             className={styles.Input}
