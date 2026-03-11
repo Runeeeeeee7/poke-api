@@ -92,10 +92,10 @@ export const Pokemon = (): JSX.Element | null => {
       </div>
   );
 
-  const sortedData = searchTerm.length > 1 ? fuzzysort.go(searchTerm, data.results, {key: 'name'}).map(result => result.obj) : data.results
+  const filteredData = searchTerm.length > 1 ? fuzzysort.go(searchTerm, data.results, {key: 'name'}).map(result => result.obj) : data.results
 
   const calculatePagination = () =>{
-    const totalPages = Math.ceil((sortedData?.length || 0) / numberOfResults)
+    const totalPages = Math.ceil((filteredData?.length || 0) / numberOfResults)
     const pages = new Set<number>()
 
     pages.add(1)
@@ -135,13 +135,13 @@ export const Pokemon = (): JSX.Element | null => {
 
   if (isSuccess) {
     return (
-      <div className={styles.container}>
-        <div className={styles.content}>
-          {sortedData.slice(sliceStart,sliceEnd).map(p => (
+      <div className={styles.Container}>
+        <div className={styles.Content}>
+          {filteredData.slice(sliceStart,sliceEnd).map(p => (
             <PokemonItem key={p.name} name={p.name} url={p.url} />
           ))}
 
-          <div className={styles.pagination}>
+          <div className={styles.Pagination}>
             {(         
               calculatePagination().map((page, i, array) => (
               <>
@@ -158,23 +158,29 @@ export const Pokemon = (): JSX.Element | null => {
             )}
           </div>
         </div>
-        <div className={styles.sidebar}>
+        <div className={styles.Sidebar}>
+          <div className={styles.SidebarHeader}>
+            <p className={styles.SidebarCount}>{filteredData.length} Pokemon</p>
+          </div>
+
           <input
             type="text"
             placeholder="Busca Pokémon..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className={styles.input}
+            className={styles.Input}
           />
 
-          <h3>Cantidad de entradas a mostrar:</h3>
+          <label className={styles.SidebarLabel}>
+            Cantidad de entradas a mostrar
+          </label>
           <select
-            className={styles.select}
+            className={styles.Select}
             value={numberOfResults}
             onChange={e => {
               const newNumberOfResults = Number(e.target.value)
               setnumberOfResults(newNumberOfResults)
-              const currentPageCalc = Math.ceil(sortedData.length / newNumberOfResults)
+              const currentPageCalc = Math.ceil(filteredData.length / newNumberOfResults)
 
               if(currentPage > currentPageCalc){
                 setCurrentPage(currentPageCalc)

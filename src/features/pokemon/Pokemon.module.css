@@ -4,38 +4,79 @@ p{
   padding:0;
 }
 
-.select {
-  font-size: 25px;
-  padding: 5px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+.Input {
+  width: 100%;
+  max-width: 260px;
+  padding: 10px 14px;
+  font-size: 18px;
+  border: 1px solid #cfd4ff;
+  border-radius: 8px;
+  outline: none;
+}
+
+.Select {
+  width: 100%;
+  max-width: 180px;
+  font-size: 20px;
+  padding: 8px 12px;
   size: 50;
   outline: none;
-  border: 2px solid transparent;
+  border: 1px solid #8b93e2;
   color: #8b93e2;
   cursor: pointer;
-  background-color: rgba(161, 133, 238, 0.1);
-  border-radius: 5px;
+  background-color: #ffffff;
+  border-radius: 8px;
   transition: all 0.15s;
 }
 
-.container {
+.Container {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: stretch;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
-.sidebar {
+.Sidebar {
   flex: 0 0 20%;
+  padding-top: 16px;
+  border-left: 1px solid #8b93e2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  box-sizing: border-box;
 }
 
-.content {
-  flex: 0 0 80%;
+.SidebarHeader {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.SidebarCount {
+  font-size: 16px;
+  font-weight: 600;
+  color: #8b93e2;
+}
+
+.SidebarLabel {
+  max-width: 220px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #8b93e2;
+}
+
+.Content {
+  flex: 1 1 auto;
   overflow-y: auto;
   margin-top: 5px;
   margin-left: 20px;
   padding-left: 10px;
-  border-left: 2px solid rgb(0, 4, 255);}
+  border-left: 2px solid #8b93e2;
+}
 
   .ItemContainer{
     display: flex;
@@ -43,7 +84,7 @@ p{
   }
 
   .PokemonItemRootContainer{
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid #8b93e2;
   }
   
   .IdContainer{
