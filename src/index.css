@@ -18,3 +18,9 @@ body,
 #root {
   height: 100%;
 }
+
+:root {
+  --primary-color: #8b93e2;
+  --secondary-color: var(--secondary-color);
+  
+}

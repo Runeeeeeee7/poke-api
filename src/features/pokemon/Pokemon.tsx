@@ -39,6 +39,11 @@ export const Pokemon = (): JSX.Element | null => {
     const totalPages = Math.ceil((filteredData?.length || 0) / numberOfResults)
     const pages = new Set<number>()
 
+    if(currentPage>totalPages){
+      setCurrentPage(totalPages)
+      return Array.from(pages)
+    }
+
     pages.add(1)
 
     if(currentPage>2){
