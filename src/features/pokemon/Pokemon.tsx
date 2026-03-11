@@ -136,28 +136,7 @@ export const Pokemon = (): JSX.Element | null => {
   if (isSuccess) {
     return (
       <div className={styles.Container}>
-        <div className={styles.Content}>
-          {filteredData.slice(sliceStart,sliceEnd).map(p => (
-            <PokemonItem key={p.name} name={p.name} url={p.url} />
-          ))}
-
-          <div className={styles.Pagination}>
-            {(         
-              calculatePagination().map((page, i, array) => (
-              <>
-                {i > 0 && array[i - 1] !== page - 1 && <span> ... </span>}
-                <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                disabled={currentPage === page}
-                  >
-                {page}
-                </button>
-              </>
-              ))
-            )}
-          </div>
-        </div>
+        <div className={styles.ResultsPane}>
         <div className={styles.Sidebar}>
           <div className={styles.SidebarHeader}>
             <p className={styles.SidebarCount}>{filteredData.length} Pokemon</p>
@@ -170,8 +149,10 @@ export const Pokemon = (): JSX.Element | null => {
             onChange={e => setSearchTerm(e.target.value)}
             className={styles.Input}
           />
+          
 
-          <label className={styles.SidebarLabel}>
+          {/* technically the design document specifies 6 and no more, so rather than risk it we just comment the selector and leave the default at 6*/}
+          {/* <label className={styles.SidebarLabel}>
             Cantidad de entradas a mostrar
           </label>
           <select
@@ -192,7 +173,30 @@ export const Pokemon = (): JSX.Element | null => {
                 {option}
               </option>
             ))}
-          </select>
+          </select> */}
+        </div>
+          <div className={styles.Content}>
+            {filteredData.slice(sliceStart,sliceEnd).map(p => (
+              <PokemonItem key={p.name} name={p.name} url={p.url} />
+            ))}
+          </div>
+
+          <div className={styles.Pagination}>
+            {(
+              calculatePagination().map((page, i, array) => (
+              <>
+                {i > 0 && array[i - 1] !== page - 1 && <span> ... </span>}
+                <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                disabled={currentPage === page}
+                  >
+                {page}
+                </button>
+              </>
+              ))
+            )}
+          </div>
         </div>
       </div>
     )

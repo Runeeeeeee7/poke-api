@@ -22,6 +22,7 @@
   font-weight: 600;
   background-color: #f0f0f0;
   border-bottom: 2px solid rgba(0, 4, 255, 0.158);
+  flex: 0 0 62px;
 }
 
 .Header-info{
