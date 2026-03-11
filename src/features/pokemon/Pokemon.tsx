@@ -2,10 +2,8 @@ import type { JSX } from "react"
 import { useEffect, useState } from "react"
 import styles from "./Pokemon.module.css"
 import { useGetPokemonDetailQuery, useGetPokemonQuery } from "./pokemonApiSlice"
-import { PokemonPaginatedResourceResponse } from "./pokemonTypes"
 import fuzzysort from 'fuzzysort'
-import { current } from "@reduxjs/toolkit"
-import { isFetchableDevEnvironment } from "vite"
+
 const options = [6, 12, 20, 30]
 function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
   const [isOpen, setIsOpen] =  useState(false)
@@ -18,27 +16,59 @@ function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
   const id = Number(urlSplit[urlSplit.length-2]) 
 
    const { data, isFetching, isError } = useGetPokemonDetailQuery(id, {
-    skip: !hasBeenHovered,
+    // not needed, querying everything at once is fast enough
+    //skip: !hasBeenHovered,
   })
 
   return (
-    <div onMouseEnter={() => setIsHovered(true)}>
-      <blockquote key={id} >
-        {name.toUpperCase()}
-      </blockquote>
+    <div onMouseEnter={() => setIsHovered(true)} className={styles.PokemonItemRootContainer}>
+      <div className={styles.ItemContainer}>
+        <div className={styles.IdContainer}>
+          {id}
+        </div>
+        <div className={styles.ImageContainer}>
+          <img src={data?.sprites.front_default} alt="" />
+        </div>
+        <div className={styles.InfoContainer}>
+          <div className={styles.NameContainer}>
+            <p> {name.toUpperCase()}</p>
+          </div>
+          <div className={styles.DataContainer}>
+            <p>
+              Base experience: {data?.base_experience}
+            </p>
+            <p>
+              Height: {data?.height}
+            </p>
+            <p>
+              Weight: {data?.weight}
+            </p>
+            <p>
+              Is default? {data?.is_default}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className={styles.ButtonContainer}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        type="button"
+        aria-expanded={isOpen}
+        aria-label={isOpen ? "Hide Pokemon info" : "Show Pokemon info"}
+        onClick={() => {
+          setIsOpen(!isOpen)
+          setIsHovered(true)
+        }}
       >
-        
+      {isOpen ? "▼" : "▶"}
       </button>
       {isOpen && (
-        <div>
+        <div className={styles.ExpandedContent}>
           <p>is open</p>
           <p>{data?.weight}</p>      
         </div>
       )}
+      </div>
     </div>
-
   )
 }
 
@@ -106,56 +136,59 @@ export const Pokemon = (): JSX.Element | null => {
   if (isSuccess) {
     return (
       <div className={styles.container}>
-
-        <input
-          type="text"
-          placeholder="Busca Pokémon..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          className={styles.input}
-        />
-
-        <h3>Seleccione la cantidad de pokemones a mostrar:</h3>
-        <select
-          className={styles.select}
-          value={numberOfResults}
-          onChange={e => {
-            const newNumberOfResults = Number(e.target.value)
-            setnumberOfResults(newNumberOfResults)
-            const currentPageCalc = Math.ceil(sortedData.length / newNumberOfResults)
-
-            if(currentPage > currentPageCalc){
-              setCurrentPage(currentPageCalc)
-            }           
-          }}
-        >
-          {options.map(option => (
-            <option key={option} value={option}>
-              {option}
-            </option>
+        <div className={styles.content}>
+          {sortedData.slice(sliceStart,sliceEnd).map(p => (
+            <PokemonItem key={p.name} name={p.name} url={p.url} />
           ))}
-        </select>
-      {sortedData.slice(sliceStart,sliceEnd).map(p => (
-          <PokemonItem key={p.name} name={p.name} url={p.url} />
-        ))}
 
-      <div className={styles.pagination}>
-        {(         
-          calculatePagination().map((page, i, array) => (
-          <>
-            {i > 0 && array[i - 1] !== page - 1 && <span> ... </span>}
-            <button
-            key={page}
-            onClick={() => setCurrentPage(page)}
-            disabled={currentPage === page}
-              >
-            {page}
-            </button>
-          </>
-          ))
-       )}
+          <div className={styles.pagination}>
+            {(         
+              calculatePagination().map((page, i, array) => (
+              <>
+                {i > 0 && array[i - 1] !== page - 1 && <span> ... </span>}
+                <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                disabled={currentPage === page}
+                  >
+                {page}
+                </button>
+              </>
+              ))
+            )}
+          </div>
+        </div>
+        <div className={styles.sidebar}>
+          <input
+            type="text"
+            placeholder="Busca Pokémon..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className={styles.input}
+          />
+
+          <h3>Cantidad de entradas a mostrar:</h3>
+          <select
+            className={styles.select}
+            value={numberOfResults}
+            onChange={e => {
+              const newNumberOfResults = Number(e.target.value)
+              setnumberOfResults(newNumberOfResults)
+              const currentPageCalc = Math.ceil(sortedData.length / newNumberOfResults)
+
+              if(currentPage > currentPageCalc){
+                setCurrentPage(currentPageCalc)
+              }           
+            }}
+          >
+            {options.map(option => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
-    </div>
     )
   }
 
