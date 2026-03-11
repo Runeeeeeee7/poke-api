@@ -1,5 +1,6 @@
 //api search at /pokemon
 export interface PokemonPaginatedResourceResponse {
+    data: Fuzzysort.KeyResults<NamedAPIResource<string>>;
     count: number,
     next: string,
     previous: string,
