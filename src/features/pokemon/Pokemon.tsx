@@ -3,99 +3,13 @@ import { useEffect, useState } from "react"
 import styles from "./Pokemon.module.css"
 import { useGetPokemonDetailQuery, useGetPokemonQuery } from "./pokemonApiSlice"
 import fuzzysort from 'fuzzysort'
+import PokemonItem from "./PokemonItem"
+import Spinner from "../spinner/Spinner"
 
 const options = [3, 6, 12, 20, 30]
 
-function formatPokemonLabel(value: string): string {
-  return value
-    .split("-")
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ")
-}
-
-function PokemonItem({url, name}: {url:string, name:string}): JSX.Element{
-  const [isOpen, setIsOpen] =  useState(false)
-  const [hasBeenHovered, setIsHovered] = useState(false)
-  const urlSplit = url.split("/")
 
 
-  // "https://pokeapi.co/api/v2/pokemon/25/"
-  // final parts output is empty(-1), -2 contains the actual id
-  const id = Number(urlSplit[urlSplit.length-2]) 
-
-   const { data, isFetching, isError } = useGetPokemonDetailQuery(id, {
-    // not needed, querying everything at once is fast enough
-    //skip: !hasBeenHovered,
-  })
-
-  const typeNames = data?.types.map(entry => formatPokemonLabel(entry.type.name)).join(", ")
-  const abilityNames = data?.abilities.map(entry => formatPokemonLabel(entry.ability.name)).join(", ")
-  const statSummary = data?.stats
-    .slice(0, 3)
-    .map(stat => `${formatPokemonLabel(stat.stat.name)}: ${stat.base_stat}`)
-    .join(" | ")
-
-  return (
-    <div onMouseEnter={() => setIsHovered(true)} className={styles.PokemonItemRootContainer}>
-      <div className={styles.ItemContainer}>
-        <div className={styles.IdContainer}>
-          {id}
-        </div>
-        <div className={styles.ImageContainer}>
-          <img src={data?.sprites.front_default} alt="" />
-        </div>
-        <div className={styles.InfoContainer}>
-          <div className={styles.NameContainer}>
-            <p> {name.toUpperCase()}</p>
-          </div>
-          <div className={styles.DataContainer}>
-            <p>
-              Base experience: {data?.base_experience}
-            </p>
-            <p>
-              Height: {data?.height}
-            </p>
-            <p>
-              Weight: {data?.weight}
-            </p>
-            <p>
-              Type: {data?.types[0].type.name.toLocaleUpperCase()}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className={styles.ButtonContainer}>
-      <button
-        type="button"
-        aria-expanded={isOpen}
-        aria-label={isOpen ? "Hide Pokemon info" : "Show Pokemon info"}
-        onClick={() => {
-          setIsOpen(!isOpen)
-          setIsHovered(true)
-        }}
-      >
-      {isOpen ? "▼" : "▶"}
-      </button>
-      {isOpen && (
-        <div className={styles.ExpandedContent}>
-          {isFetching && <p className={styles.ExpandedStatus}>Loading details...</p>}
-          {isError && <p className={styles.ExpandedStatus}>Unable to load details.</p>}
-          {data && (
-            <div className={styles.ExpandedDetails}>
-              <p><span className={styles.DetailLabel}>Species:</span> {formatPokemonLabel(data.species.name)}</p>
-              <p><span className={styles.DetailLabel}>Abilities:</span> {abilityNames}</p>
-              <p><span className={styles.DetailLabel}>Types:</span> {typeNames}</p>
-              <p><span className={styles.DetailLabel}>Stats:</span> {statSummary}</p>
-              <p><span className={styles.DetailLabel}>Default form:</span> {data.is_default ? "Yes" : "No"}</p>
-              <p><span className={styles.DetailLabel}>Order:</span> {data.order}</p>
-            </div>
-          )}
-        </div>
-      )}
-      </div>
-    </div>
-  )
-}
 
 export const Pokemon = (): JSX.Element | null => {
   const [numberOfResults, setnumberOfResults] = useState(6)
@@ -111,13 +25,15 @@ export const Pokemon = (): JSX.Element | null => {
     setSliceEnd(numberOfResults*currentPage)
   }, [numberOfResults, currentPage, searchTerm])
 
-  if(data == undefined) return(
-    <div>
-        <h1>Hubo un error al cargar: ${isError}</h1>
+  if(data == undefined) {
+    return(
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
+        <Spinner />
       </div>
-  );
+      );
+  }
 
-  const filteredData = searchTerm.length > 1 ? fuzzysort.go(searchTerm, data.results, {key: 'name'}).map(result => result.obj) : data.results
+  const filteredData = searchTerm.length > 1 ? fuzzysort.go(searchTerm, data.results, {key: 'name'}).map(result => result.obj) : data?.results
 
   const calculatePagination = () =>{
     const totalPages = Math.ceil((filteredData?.length || 0) / numberOfResults)
@@ -145,15 +61,15 @@ export const Pokemon = (): JSX.Element | null => {
   if (isError) {
     return (
       <div>
-        <h1>Hubo un error al cargar: ${isError}</h1>
+        <h1>Hubo un error al cargar.</h1>
       </div>
     )
   }
 
   if (isLoading) {
     return (
-      <div>
-        <h1>Cargando...</h1>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
+        <Spinner />
       </div>
     )
   }
@@ -177,7 +93,7 @@ export const Pokemon = (): JSX.Element | null => {
           
 
           {/* technically the design document specifies 6 and no more, so rather than risk it we just comment the selector and leave the default at 6*/}
-          {/* <label className={styles.SidebarLabel}>
+          <label className={styles.SidebarLabel}>
             Cantidad de entradas a mostrar
           </label>
           <select
@@ -198,27 +114,26 @@ export const Pokemon = (): JSX.Element | null => {
                 {option}
               </option>
             ))}
-          </select> */}
+          </select>
         </div>
           <div className={styles.Content}>
             {filteredData.slice(sliceStart,sliceEnd).map(p => (
-              <PokemonItem key={p.name} name={p.name} url={p.url} />
+              <PokemonItem key={p.name} url={p.url} />
             ))}
           </div>
 
           <div className={styles.Pagination}>
             {(
               calculatePagination().map((page, i, array) => (
-              <>
+              <div key={page}>
                 {i > 0 && array[i - 1] !== page - 1 && <span> ... </span>}
                 <button
-                key={page}
                 onClick={() => setCurrentPage(page)}
                 disabled={currentPage === page}
                   >
                 {page}
                 </button>
-              </>
+              </div>
               ))
             )}
           </div>

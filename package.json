@@ -12,7 +12,6 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "vite",
-    "test": "vitest --run",
     "type-check": "tsc -b --noEmit"
   },
   "dependencies": {
